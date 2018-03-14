@@ -11,24 +11,35 @@ public class JobLList implements WaitingListADT<JobNode> {
 	
 	@Override
 	public void schedule(JobNode newJob) {
-		JobNode newNode = new JobNode(newJob.getArrival(), newJob.getUserId(),
-				newJob.getPriority(), newJob.getTTL(), newJob.getDescription());
-		if (isEmpty()) {
-			head = newNode;
-		}
-		if(newJob.getPriority() == 0) {
-			newNode.setNext(null);
-		} else {
-			while(newNode.getPriority() != 0) {
-				if(newNode.getNext() == null) {
-					newNode.setNext(null);
-				} else {
-					newNode.setNext(newNode);
-				}
+		if(isEmpty()) {
+			head = newJob;
+		} else if(!isEmpty() && newJob.getPriority() == 0) {
+			JobNode last = head;
+			while(last.getNext() != null) {
+				last = last.getNext();
 			}
+			last = last.getNext();
+			last = newJob;
 		}
 		
-		size++;
+//		JobNode newNode = new JobNode(newJob.getArrival(), newJob.getUserId(),
+//				newJob.getPriority(), newJob.getTTL(), newJob.getDescription());
+//		if (isEmpty()) {
+//			head = newNode;
+//		}
+//		if(newJob.getPriority() == 0) {
+//			newNode.setNext(null);
+//		} else {
+//			while(newNode.getPriority() != 0) {
+//				if(newNode.getNext() == null) {
+//					newNode.setNext(null);
+//				} else {
+//					newNode.setNext(newNode);
+//				}
+//			}
+//		}
+//		
+//		size++;
 	}
 
 	@Override
@@ -71,14 +82,35 @@ public class JobLList implements WaitingListADT<JobNode> {
 
 	@Override
 	public void clear() {
-		
-		
+		this.head = null;
+		this.size = 0;
 	}
 
 	@Override
 	public WaitingListADT<JobNode> duplicate() {
-		// TODO Auto-generated method stub
-		return null;
+		WaitingListADT<JobNode> newList = new JobLList();
+		JobNode copy = head;
+		while(copy != null) {
+			newList.schedule(copy);
+			copy = copy.getNext();
+		}
+		return newList;
+	}
+	
+	public String toString() {
+		System.out.println("Job list is empty: " + isEmpty());
+		System.out.println("The size is: " + this.size + " job(s)");
+		JobNode display = this.head;
+		if(display != null) {
+			while(display != null) {
+				System.out.println("job #" + display.getJobId() + " : " + display.getDescription()
+				+ " " + display.getUserId() + " " + display.getPriority());
+				display = display.getNext();
+			}
+		}
+		
+		return "";
+		
 	}
 	
 }
